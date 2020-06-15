@@ -1,4 +1,4 @@
-// Limit Woocommerce phone field to 11 digits number
+// Limit Woocommerce phone field to 11 digits number add inside current theme function
 add_action('woocommerce_checkout_process', 'my_custom_checkout_field_process');
   
 function my_custom_checkout_field_process() {
