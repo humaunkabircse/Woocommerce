@@ -1,0 +1,8 @@
+// billing field WooCommerce Checkout Fields Hook 
+add_filter( 'woocommerce_checkout_fields' , 'custom_wc_checkout_fields' );
+// Change order comments placeholder and label, and set billing phone number to not required.
+function custom_wc_checkout_fields( $fields ) {
+    $fields['billing']['billing_phone']['required'] = true;
+    return $fields;
+}
+
