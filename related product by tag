@@ -1,0 +1,5 @@
+
+add_filter( 'woocommerce_get_related_product_cat_terms', 'remove_related_product_categories', 10, 2 );
+function remove_related_product_categories( $terms_ids, $product_id  ){
+    return array();
+}
