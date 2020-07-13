@@ -1,0 +1,18 @@
+
+/*BEGEN kabir custom discount text*/
+add_action( 'woocommerce_after_shop_loop_item_title', 'kabir_custom_text1', 5 );
+function kabir_custom_text1() {
+global $product;
+if ( is_product_category( array('panjabi','partywear-kameez','casual-tops-and-kurtas') ) ) {  
+echo '<span class="custom_discount_1">40% OFF</span>';
+}
+}
+
+add_action( 'woocommerce_after_shop_loop_item_title', 'kabir_custom_text2', 5 );
+function kabir_custom_text2() {
+global $product;
+if ( is_product_category( array('new-casual-tops-kurtas','eid-ul-azha-20-panjabi','eid-ul-azha-20-kameez','workwear-kurtas','casual-shirt') ) ) {  
+echo '<span class="custom_discount_1">20% OFF</span>';
+}
+}
+/*END kabir custom discount text*/
