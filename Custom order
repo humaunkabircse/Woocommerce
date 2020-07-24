@@ -1,0 +1,139 @@
+
+// ---------------------
+// kabir add new custom order status Pre processing
+function wpblog_wc_register_post_statuses() {
+register_post_status( 'wc-pre', array(
+'label' => _x( 'Pre processing', 'WooCommerce Order status', 'text_domain' ),
+'public' => true,
+'exclude_from_search' => false,
+'show_in_admin_all_list' => true,
+'show_in_admin_status_list' => true,
+'label_count' => _n_noop( ' Pre processing (%s)', 'Pre processing (%s)', 'text_domain' )
+) );
+}
+add_filter( 'init', 'wpblog_wc_register_post_statuses' );
+
+function wpblog_wc_add_order_statuses( $order_statuses ) {
+$order_statuses['wc-pre'] = _x( 'Pre processing', 'WooCommerce Order status', 'text_domain' );
+return $order_statuses;
+}
+add_filter( 'wc_order_statuses', 'wpblog_wc_add_order_statuses' );
+// END kabir add new custom order status Pre processing
+
+
+
+
+
+//Adding custom Pre Processing status to admin order list bulk actions dropdown
+add_filter( 'bulk_actions-edit-shop_order', 'kabirpre_dropdown_bulk_actions_shop_order');
+function kabirpre_dropdown_bulk_actions_shop_order( $actions ) {
+    $actions['mark_pre'] = __( 'Change status to Pre Processing', 'woocommerce' );
+    return $actions;
+}
+  
+/** 
+ * Comment: Register Pre Processing status in woo-commerce
+**/
+function register_pre_order_status() {
+    register_post_status( 'wc-pre', array(
+        'label'                     => 'pre',
+        'public'                    => true,
+        'exclude_from_search'       => false,
+        'show_in_admin_all_list'    => true,
+        'show_in_admin_status_list' => true,
+        'label_count'               => _n_noop( 'Pre Processing <span class="count">(%s)</span>', 'Pre Processing <span class="count">(%s)</span>' )
+    ) );
+}
+add_action( 'init', 'register_pre_order_status' );
+
+// Comment: Add to list of WC Order statuses 
+ 
+function add_pre_order_statuses( $order_statuses ) {
+    $new_order_statuses = array();
+    // add new order status after processing
+    foreach ( $order_statuses as $key => $status ) {
+        $new_order_statuses[ $key ] = $status;
+        if ( 'wc-processing' === $key ) {
+            $new_order_statuses['wc-pre'] = 'Pre Processing';
+        }
+    }
+    return $new_order_statuses;
+}
+add_filter( 'wc_order_statuses', 'add_pre_order_statuses' );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Register Order Status Received by Courier
+add_action('init', 'register_custom_order_statuses');
+function register_custom_order_statuses() {
+    register_post_status('wc-shipped ', array(
+        'label' => __( 'Received by Courier', 'woocommerce' ),
+        'public' => true,
+        'exclude_from_search' => false,
+        'show_in_admin_all_list' => true,
+        'show_in_admin_status_list' => true,
+        'label_count' => _n_noop('Received by Courier <span class="count">(%s)</span>', 'Received by Courier <span class="count">(%s)</span>')
+    ));
+}
+
+// Add a custom order status to list of WC Order statuses
+add_filter('wc_order_statuses', 'add_custom_order_statuses');
+function add_custom_order_statuses($order_statuses) {
+    $new_order_statuses = array();
+
+    // add new order status before processing
+    foreach ($order_statuses as $key => $status) {
+        $new_order_statuses[$key] = $status;
+        if ('wc-processing' === $key) {
+            $new_order_statuses['wc-shipped'] = __('Received by Courier', 'woocommerce' );
+        }
+    }
+    return $new_order_statuses;
+}
+
+// Adding custom status 'awaiting-delivery' to admin order list bulk dropdown
+add_filter( 'bulk_actions-edit-shop_order', 'custom_dropdown_bulk_actions_shop_order', 50, 1 );
+function custom_dropdown_bulk_actions_shop_order( $actions ) {
+    $new_actions = array();
+
+    // add new order status before processing
+    foreach ($actions as $key => $action) {
+        if ('mark_processing' === $key)
+            $new_actions['mark_shipped'] = __( 'Change status to Received by Courier', 'woocommerce' );
+
+        $new_actions[$key] = $action;
+    }
+    return $new_actions;
+}
+// Add a custom order status action button (for orders with "processing" status)
+add_filter( 'woocommerce_admin_order_actions', 'add_custom_order_status_actions_button', 100, 2 );
+function add_custom_order_status_actions_button( $actions, $order ) {
+    // Display the button for all orders that have a 'processing', 'pending' or 'on-hold' status
+    if ( $order->has_status( array( 'on-hold', 'processing', 'pending' ) ) ) {
+
+        // The key slug defined for your action button
+        $action_slug = 'shipped';
+
+        // Set the action button
+        $actions[$action_slug] = array(
+            'url'       => wp_nonce_url( admin_url( 'admin-ajax.php?action=woocommerce_mark_order_status&status='.$action_slug.'&order_id='.$order->get_id() ), 'woocommerce-mark-order-status' ),
+            'name'      => __( 'Received by Courier', 'woocommerce' ),
+            'action'    => $action_slug,
+        );
+    }
+    return $actions;
+}
