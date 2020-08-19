@@ -56,6 +56,5 @@ function k_after_email_order_details() {
         echo '<p><strong>'.__('You Saved : ').'</strong> ' . wc_price( $discount_total + $woocommerce->cart->discount_cart ) .'</p>';    
     }
 }
-// Hook our values to the Basket and Checkout pages
 add_action( 'woocommerce_email_order_details', 'k_after_email_order_details', 25, 4);
 //END Display Total Discount / Savings email Order
