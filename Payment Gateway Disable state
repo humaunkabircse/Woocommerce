@@ -1,0 +1,16 @@
+
+// START payment_gateway_disable_state
+add_filter( 'woocommerce_available_payment_gateways', 'kabir_payment_gateway_disable_state' );
+  
+function kabir_payment_gateway_disable_state( $available_gateways ) {
+    if ( is_admin() ) return $available_gateways;
+    if ( isset( $available_gateways['authorize'] ) && WC()->customer->get_billing_state() <> 'BD-13' ) {
+        unset( $available_gateways['authorize'] );
+    } else {
+        if ( isset( $available_gateways['cheque'] ) && WC()->customer->get_billing_state() == 'BD-13' ) {
+            unset( $available_gateways['cheque'] );
+        }
+    }
+    return $available_gateways;
+}
+// END payment_gateway_disable_state
