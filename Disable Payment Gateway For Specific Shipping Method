@@ -1,0 +1,73 @@
+/**
+ * @snippet       Disable Payment Gateway For Specific Shipping Method
+ * @how-to        Get CustomizeWoo.com FREE
+ * @author        Rodolfo Melogli
+ * @testedwith    WooCommerce 3.6.2
+ * @donate $9     https://businessbloomer.com/bloomer-armada/
+ */
+  
+add_filter( 'woocommerce_available_payment_gateways', 'bbloomer_gateway_disable_shipping_326' );
+  
+function bbloomer_gateway_disable_shipping_326( $available_gateways ) {
+     
+   if ( ! is_admin() ) {
+        
+      $chosen_methods = WC()->session->get( 'chosen_shipping_methods' );
+        
+      $chosen_shipping = $chosen_methods[0];
+        
+      if ( isset( $available_gateways['cod'] ) && 0 === strpos( $chosen_shipping, 'local_pickup' ) ) {
+         unset( $available_gateways['cod'] );
+      }
+        
+   }
+     
+   return $available_gateways;
+     
+}
+
+
+
+
+
+
+
+<?php
+//Disable Payment Gateway For Specific Shipping Method
+ 
+add_filter( 'woocommerce_available_payment_gateways', 'wpflames_gateway_disable_shipping_368' );
+ 
+function wpflames_gateway_disable_shipping_368( $available_gateways ) {
+ 
+    global $woocommerce;
+ 
+    if ( !is_admin() ) {
+ 
+        $chosen_methods = WC()-&amp;gt;session-&amp;gt;get( 'chosen_shipping_methods' );
+ 
+        $chosen_shipping = $chosen_methods[0];
+ 
+        //Free shipping
+        if ( isset( $available_gateways['cod'] ) && 0 === strpos( $chosen_shipping, 'free_shipping' ) ) {
+            unset( $available_gateways['cod'] );
+        }
+ 
+        //Flat rate
+        if ( isset( $available_gateways['cod'] ) && 0 === strpos( $chosen_shipping, 'flat_rate' ) ) {
+            unset( $available_gateways['cheque'] );
+        }
+        //Local pickup
+        if ( isset( $available_gateways['cod'] ) && 0 === strpos( $chosen_shipping, 'local_pickup' ) ) {
+            unset( $available_gateways['cod'] );
+        }
+         
+        //Cheque
+        if ( isset( $available_gateways['cod'] ) && 0 === strpos( $chosen_shipping, 'flat_rate:2' ) ) {
+            unset( $available_gateways['cheque'] );
+        }
+ 
+    }
+ 
+return $available_gateways;
+ 
+}
