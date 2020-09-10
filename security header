@@ -1,0 +1,8 @@
+#Enabling this header
+Header always append X-Frame-Options SAMEORIGIN
+
+Header always set Strict-Transport-Security max-age=31536000
+
+Header always set Content-Security-Policy "default-src https: data: 'unsafe-inline' 'unsafe-eval'"
+
+Header always set X-Content-Type-Options "nosniff"
