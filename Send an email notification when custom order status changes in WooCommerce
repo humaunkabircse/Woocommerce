@@ -1,16 +1,49 @@
 
-add_action("woocommerce_order_status_ordercancel", "kabiroc_custom_notification");
-function my_custom_notification($order_id, $checkout=null) {
+
+add_action("woocommerce_order_status_pre", "kabirpre_custom_notification");
+function kabirpre_custom_notification($order_id, $checkout=null) {
    global $woocommerce;
    $order = new WC_Order( $order_id );
-   if($order->status === 'ordercancel' ) {
+   if($order->status === 'pre' ) {
       // Create a mailer
       $mailer = $woocommerce->mailer();
-      $message_body = __( 'Sorry Your order cancel' );
+      $message_body = __( 'Dear valued customer thanks you for you order number.  We are currently processing you order. You will get further notification when we have handed over your order package to the delivery service company very shortly. Thanks for shopping with us.' );
       $message = $mailer->wrap_message(
       // Message head and message body.
-     sprintf( __( 'Your Order %s has been Canceled' ), $order->get_order_number() ), $message_body );
+     sprintf( __( 'Your Order No %s Pre processing' ), $order->get_order_number() ), $message_body );
      // Cliente email, email subject and message.
-     $mailer->send( $order->billing_email, sprintf( __( 'Order %s received' ), $order->get_order_number() ), $message );
+     $mailer->send( $order->billing_email, sprintf( __( 'Your Order No %s Pre processing' ), $order->get_order_number() ), $message );
+  }
+}
+
+add_action("woocommerce_order_status_shipped", "kabirrc_custom_notification");
+function kabirrc_custom_notification($order_id, $checkout=null) {
+   global $woocommerce;
+   $order = new WC_Order( $order_id );
+   if($order->status === 'shipped' ) {
+      // Create a mailer
+      $mailer = $woocommerce->mailer();
+      $message_body = __( 'Dear valued customer , we are happy to inform you that your order package has been handed over to the delivery service company. You should get the delivery with 1 to 3 days as per you location detail.' );
+      $message = $mailer->wrap_message(
+      // Message head and message body.
+     sprintf( __( 'Your Order No %s Received by Courier' ), $order->get_order_number() ), $message_body );
+     // Cliente email, email subject and message.
+     $mailer->send( $order->billing_email, sprintf( __( 'Your Order No %s Received by Courier' ), $order->get_order_number() ), $message );
+  }
+}
+
+add_action("woocommerce_order_status_processing", "kabirp_custom_notification");
+function kabirp_custom_notification($order_id, $checkout=null) {
+   global $woocommerce;
+   $order = new WC_Order( $order_id );
+   if($order->status === 'processing' ) {
+      // Create a mailer
+      $mailer = $woocommerce->mailer();
+      $message_body = __( 'Dear valued customer thanks you for you order number.  We are currently processing you order. You will get further notification when we have handed over your order package to the delivery service company very shortly. Thanks for shopping with us.' );
+      $message = $mailer->wrap_message(
+      // Message head and message body.
+     sprintf( __( 'Your Order No %s Processing' ), $order->get_order_number() ), $message_body );
+     // Cliente email, email subject and message.
+     $mailer->send( $order->billing_email, sprintf( __( 'Your Order No %s Processing' ), $order->get_order_number() ), $message );
   }
 }
