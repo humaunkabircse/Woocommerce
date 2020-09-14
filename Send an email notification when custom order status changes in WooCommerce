@@ -1,0 +1,16 @@
+
+add_action("woocommerce_order_status_ordercancel", "kabiroc_custom_notification");
+function my_custom_notification($order_id, $checkout=null) {
+   global $woocommerce;
+   $order = new WC_Order( $order_id );
+   if($order->status === 'ordercancel' ) {
+      // Create a mailer
+      $mailer = $woocommerce->mailer();
+      $message_body = __( 'Sorry Your order cancel' );
+      $message = $mailer->wrap_message(
+      // Message head and message body.
+     sprintf( __( 'Your Order %s has been Canceled' ), $order->get_order_number() ), $message_body );
+     // Cliente email, email subject and message.
+     $mailer->send( $order->billing_email, sprintf( __( 'Order %s received' ), $order->get_order_number() ), $message );
+  }
+}
