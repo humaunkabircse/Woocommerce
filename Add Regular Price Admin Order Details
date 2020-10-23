@@ -1,0 +1,21 @@
+
+add_filter( 'woocommerce_order_item_get_name', 'filter_order_item_get_name', 10, 2 );
+function filter_order_item_get_name( $item_name, $order_item ) {
+    if ( is_admin() && $order_item->is_type('line_item') ) {
+        $product = $order_item->get_product();
+
+
+        $regular_price = $product->get_regular_price();
+        $sale_price = $product->get_sale_price();
+        $discount = ($regular_price - $sale_price);
+        $discountp = ($discount/$regular_price*100);
+
+
+
+
+        if( $description = $product->get_name() . "<br><div style='color:red;'>(Regular Price =" . $regular_price. ")" . " (Discount =" . $discountp. "%)</div>") {
+            $item_name = $description;
+        }
+    }
+    return $item_name;
+}
